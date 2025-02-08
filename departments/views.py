@@ -55,5 +55,3 @@ class DepartmentsDeleteView(DeleteView):
     model = Department
     template_name = 'departments/list.html'
     success_url = reverse_lazy('departments:depart_list')
-
-
