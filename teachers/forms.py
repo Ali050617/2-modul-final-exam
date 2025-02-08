@@ -1,33 +1,61 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import Teacher
-from users.forms import CustomUser
-
-
-class CustomUserCreationForm(UserCreationForm):
-    class Meta(UserCreationForm.Meta):
-        model = CustomUser
-        fields = UserCreationForm.Meta.fields + ('is_student', 'is_teacher')
-
-
-class CustomUserChangeForm(UserChangeForm):
-    class Meta:
-        model = CustomUser
-        fields = UserChangeForm.Meta.fields
+import datetime
 
 
 class TeacherForm(forms.ModelForm):
     class Meta:
         model = Teacher
-        fields = ['department', 'subjects', 'qualification', 'join_date', 'employment_type']
+        fields = (
+            'first_name', 'last_name', 'department', 'subjects',
+            'qualification', 'email', 'phone_number', 'address',
+            'join_date', 'employment_type', 'image', 'status', 'position'
+        )
         widgets = {
-            'join_date': forms.DateInput(attrs={'type': 'date'}),
+            'first_name': forms.TextInput(attrs={
+                'placeholder': 'Enter first name',
+                'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+            }),
+            'last_name': forms.TextInput(attrs={
+                'placeholder': 'Enter last name',
+                'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+            }),
+            'department': forms.Select(attrs={
+                'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+            }),
+            'status': forms.Select(attrs={
+                'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+            }),
+            'subjects': forms.CheckboxSelectMultiple(),
+            'qualification': forms.TextInput(attrs={
+                'placeholder': 'Enter qualification',
+                'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+            }),
+            'email': forms.EmailInput(attrs={
+                'placeholder': 'Enter email address',
+                'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+            }),
+            'position': forms.TextInput(attrs={
+                'placeholder': 'Enter a Position',
+                'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+            }),
+            'phone_number': forms.TextInput(attrs={
+                'placeholder': 'Enter phone number',
+                'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+            }),
+            'address': forms.Textarea(attrs={
+                'placeholder': 'Enter full address',
+                'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'rows': 3,
+            }),
+            'join_date': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+            }),
+            'employment_type': forms.Select(choices=Teacher._meta.get_field('employment_type').choices, attrs={
+                'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+            }),
+            'image': forms.FileInput(attrs={
+                'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+            }),
         }
-
-    def clean_subjects(self):
-        subjects = self.cleaned_data.get('subjects')
-        if not subjects:
-            raise forms.ValidationError("Please select at least one subject.")
-        return subjects
-
-

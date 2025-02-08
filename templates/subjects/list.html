@@ -1,184 +1,161 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School CRM - Subjects List</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-</head>
-<body class="bg-gray-50">
-    <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
-        <aside class="fixed left-0 top-0 h-screen w-64 bg-white border-r p-4 overflow-y-auto">
-            <div class="mb-8">
-                <h1 class="text-xl font-bold text-blue-600">School CRM</h1>
-            </div>
-            <nav class="space-y-2">
-                <a href="../dashboard.html" class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50">
-                    <i class="bi bi-grid"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="../departments/list.html" class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50">
-                    <i class="bi bi-building"></i>
-                    <span>Departments</span>
-                </a>
-                <a href="../students/list.html" class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50">
-                    <i class="bi bi-people"></i>
-                    <span>Students</span>
-                </a>
-                <a href="../teachers/list.html" class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50">
-                    <i class="bi bi-person-badge"></i>
-                    <span>Teachers</span>
-                </a>
-                <a href="../groups/list.html" class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50">
-                    <i class="bi bi-collection"></i>
-                    <span>Groups</span>
-                </a>
-                <a href="../subjects/list.html" class="flex items-center space-x-2 px-4 py-2 rounded-lg bg-blue-50 text-blue-600">
-                    <i class="bi bi-book"></i>
-                    <span>Subjects</span>
-                </a>
-            </nav>
-        </aside>
+{% extends 'base.html' %}
 
-        <!-- Main Content -->
-        <div class="flex-1 ml-64 flex flex-col h-screen">
-            <!-- Navbar -->
-            <nav class="bg-white shadow-sm">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="flex justify-between h-16">
-                        <div class="flex items-center">
-                            <h1 class="text-xl font-bold text-blue-600">School CRM</h1>
+
+{% block title %}  School CRM - Subjects List {% endblock %}
+
+
+{% block content %}
+<div class="mb-8 flex justify-between items-center">
+    <h1 class="text-2xl font-bold">Subjects</h1>
+    <div class="flex items-center space-x-4">
+        <div>
+            <form method="get" action="{% url 'subjects:subject_list' %}" id="searchForm" class="relative">
+                <button type="submit">
+                    <i class="bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-500"></i>
+                </button>
+                <input type="text" name="search" placeholder="Search Student..."
+                    class="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    value="{{ request.GET.search|default:'' }}">
+            </form>
+        </div>
+        <a href="{% url 'subjects:create' %}"
+           class="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg">
+            <i class="bi bi-plus"></i>
+            <span>Add Subject</span>
+        </a>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="bg-white p-4 rounded-lg shadow-sm mb-6">
+    <div class="flex flex-wrap gap-4">
+        <form method="get" action="{% url 'subjects:subject_list' %}" id="filterForm">
+            <select name="department" class="border rounded-lg px-4 py-2" onchange="document.getElementById('filterForm').submit();">
+                <option value="">All Departments</option>
+                    {% for department in departments %}
+                <option value="{{ department.pk }}" {% if request.GET.department == department.pk|slugify %}selected{% endif %}>
+                    {{ department }}
+                </option>
+            {% endfor %}
+            </select>
+            <select name="grade_level" class="border rounded-lg px-4 py-2" onchange="document.getElementById('filterForm').submit();">
+                <option value="">All Grades</option>
+                <option value="1" {% if request.GET.grade_level == '1' %}selected{% endif %}>Grade 1</option>
+                <option value="2" {% if request.GET.grade_level == '2' %}selected{% endif %}>Grade 2</option>
+                <option value="3" {% if request.GET.grade_level == '3' %}selected{% endif %}>Grade 3</option>
+                <option value="4" {% if request.GET.grade_level == '4' %}selected{% endif %}>Grade 4</option>
+                <option value="5" {% if request.GET.grade_level == '5' %}selected{% endif %}>Grade 5</option>
+                <option value="6" {% if request.GET.grade_level == '6' %}selected{% endif %}>Grade 6</option>
+                <option value="7" {% if request.GET.grade_level == '7' %}selected{% endif %}>Grade 7</option>
+                <option value="8" {% if request.GET.grade_level == '8' %}selected{% endif %}>Grade 8</option>
+                <option value="9" {% if request.GET.grade_level == '9' %}selected{% endif %}>Grade 9</option>
+                <option value="10" {% if request.GET.grade_level == '10' %}selected{% endif %}>Grade 10</option>
+                <option value="11" {% if request.GET.grade_level == '11' %}selected{% endif %}>Grade 11</option>
+                <option value="12" {% if request.GET.grade_level == '12' %}selected{% endif %}>Grade 12</option>
+            </select>
+            <select name="status" class="border rounded-lg px-4 py-2" onchange="document.getElementById('filterForm').submit();">
+                <option value="">Status</option>
+                <option value="ac" {% if request.GET.status == 'ac' %}selected{% endif %}>Active</option>
+                <option value="in" {% if request.GET.status == 'in' %}selected{% endif %}>Inactive</option>
+                <option value="pd" {% if request.GET.status == 'pd' %}selected{% endif %}>Pending</option>
+            </select>
+            <button class="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg">
+                <a href="{% url 'subjects:subject_list' %}" class="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg">Clear Filters</a>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Subjects Table -->
+{% if subjects %}
+<div class="bg-white rounded-lg shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-50 border-b">
+            <tr>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">
+                    <div class="flex items-center space-x-1">
+                        <span>Subject Name</span>10
+                        <i class="bi bi-arrow-down-up"></i>
+                    </div>
+                </th>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Department</th>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Teachers</th>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Students</th>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Status</th>
+                <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
+            </tr>
+            </thead>
+            {% for subject in subjects %}
+            <tbody class="divide-y">
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="h-8 w-8 rounded-full bg-orange-100 flex items-center justify-center">
+                            <i class="bi bi-book text-orange-600"></i>
                         </div>
-                        <div class="flex items-center">
-                            <a href="/profile-update.html" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-                                <i class="bi bi-person-circle mr-2"></i>Update Profile
-                            </a>
-                            <a href="/logout.html" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-                                <i class="bi bi-box-arrow-right mr-2"></i>Logout
-                            </a>
+                        <div>
+                            <p class="font-medium">{{ subject.name }}</p>
+                            <p class="text-sm text-gray-500">Advanced
+                                <Level></Level>
+                            </p>
                         </div>
                     </div>
-                </div>
-            </nav>
-
-            <!-- Main Content -->
-            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-8">
-                <div class="mb-8 flex justify-between items-center">
-                    <h1 class="text-2xl font-bold">Subjects</h1>
-                    <div class="flex items-center space-x-4">
-                        <div class="relative">
-                            <input type="search" placeholder="Search subjects..." class="pl-10 pr-4 py-2 border rounded-lg">
-                            <i class="bi bi-search absolute left-3 top-3 text-gray-400"></i>
-                        </div>
-                        <a href="form.html" class="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg">
-                            <i class="bi bi-plus"></i>
-                            <span>Add Subject</span>
+                </td>
+                <td class="px-6 py-4 text-sm">{{ subject.department }}</td>
+                <td class="px-6 py-4 text-sm">{{ subject.teachers.count }} teachers</td>
+                <td class="px-6 py-4 text-sm">{{ subject.teachers.students.count }} students</td>
+                <td class="px-6 py-4">
+                    {% if subject.status == 'ac' %}
+                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+                                                {{ subject.get_status_display }}
+                                            </span>
+                    {% elif subject.status == 'in' %}
+                    <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-sm">
+                                                {{ subject.get_status_display }}
+                                            </span>
+                    {% elif subject.status == 'pd' %}
+                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">
+                                                {{ subject.get_status_display }}
+                                            </span>
+                    {% endif %}
+                </td>
+                <td class="px-6 py-4">
+                    <div class="flex items-center space-x-3">
+                        <a href="{{ subject.get_detail_url }}" class="text-blue-600 hover:text-blue-800">
+                            <i class="bi bi-eye"></i>
                         </a>
-                    </div>
-                </div>
-
-                <!-- Filters -->
-                <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
-                    <div class="flex flex-wrap gap-4">
-                        <select class="border rounded-lg px-4 py-2">
-                            <option>All Departments</option>
-                            <option>Science</option>
-                            <option>Mathematics</option>
-                            <option>Languages</option>
-                        </select>
-                        <select class="border rounded-lg px-4 py-2">
-                            <option>All Grades</option>
-                            <option>Grade 9</option>
-                            <option>Grade 10</option>
-                            <option>Grade 11</option>
-                        </select>
-                        <select class="border rounded-lg px-4 py-2">
-                            <option>Status</option>
-                            <option>Active</option>
-                            <option>Inactive</option>
-                        </select>
-                        <button class="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg">
-                            Clear Filters
+                        <a href="{{ subject.get_update_url }}" class="text-gray-600 hover:text-gray-800">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <button class="text-red-600 hover:text-red-800">
+                            <a href="{{ subject.get_delete_url }}">
+                                <i class="bi bi-trash"></i>
+                            </a>
                         </button>
                     </div>
-                </div>
+                </td>
+            </tr>
+            </tbody>
+            {% endfor %}
+        </table>
+    </div>
 
-                <!-- Subjects Table -->
-                <div class="bg-white rounded-lg shadow-sm">
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-gray-50 border-b">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">
-                                        <div class="flex items-center space-x-1">
-                                            <span>Subject Name</span>
-                                            <i class="bi bi-arrow-down-up"></i>
-                                        </div>
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Department</th>
-                                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Teachers</th>
-                                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Students</th>
-                                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Status</th>
-                                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y">
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="h-8 w-8 rounded-full bg-orange-100 flex items-center justify-center">
-                                                <i class="bi bi-book text-orange-600"></i>
-                                            </div>
-                                            <div>
-                                                <p class="font-medium">Physics</p>
-                                                <p class="text-sm text-gray-500">Advanced Level</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm">Science</td>
-                                    <td class="px-6 py-4 text-sm">3 teachers</td>
-                                    <td class="px-6 py-4 text-sm">45 students</td>
-                                    <td class="px-6 py-4">
-                                        <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
-                                            Active
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center space-x-3">
-                                            <a href="detail.html" class="text-blue-600 hover:text-blue-800">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            <a href="form.html" class="text-gray-600 hover:text-gray-800">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            <button class="text-red-600 hover:text-red-800">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Pagination -->
-                    <div class="px-6 py-4 border-t">
-                        <div class="flex justify-between items-center">
-                            <p class="text-sm text-gray-600">Showing 1 to 10 of 24 subjects</p>
-                            <div class="flex space-x-2">
-                                <button class="px-3 py-1 border rounded hover:bg-gray-50">Previous</button>
-                                <button class="px-3 py-1 border rounded bg-blue-600 text-white">1</button>
-                                <button class="px-3 py-1 border rounded hover:bg-gray-50">2</button>
-                                <button class="px-3 py-1 border rounded hover:bg-gray-50">3</button>
-                                <button class="px-3 py-1 border rounded hover:bg-gray-50">Next</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main>
+    <!-- Pagination -->
+    <div class="px-6 py-4 border-t">
+        <div class="flex justify-between items-center">
+            <p class="text-sm text-gray-600">Showing 1 to 10 of {{ subjects.count }} subjects</p>
+            <div class="flex space-x-2">
+                <button class="px-3 py-1 border rounded hover:bg-gray-50">Previous</button>
+                <button class="px-3 py-1 border rounded bg-blue-600 text-white">1</button>
+                <button class="px-3 py-1 border rounded hover:bg-gray-50">2</button>
+                <button class="px-3 py-1 border rounded hover:bg-gray-50">3</button>
+                <button class="px-3 py-1 border rounded hover:bg-gray-50">Next</button>
+            </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% else %}
+    <h3>No added Subjects</h3>
+{% endif %}
+{% endblock %}

@@ -2,9 +2,10 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, Group
 from django.db import models
 from django.utils import timezone
 from .managers import CustomUserManager
+from departments.base_models import BaseModel
 
 
-class CustomUser(AbstractBaseUser, PermissionsMixin):
+class CustomUser(AbstractBaseUser, PermissionsMixin, BaseModel):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=30, unique=True)
     is_active = models.BooleanField(default=False)
@@ -25,3 +26,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class UserProfile(BaseModel):
+    bio = models.TextField(null=True, blank=True)
+    dob = models.DateField(null=True, blank=True)
+    phone_number = models.CharField(max_length=14, null=True, blank=True)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profile')

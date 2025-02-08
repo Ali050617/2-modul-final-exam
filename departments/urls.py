@@ -8,7 +8,7 @@ app_name = 'departments'
 urlpatterns = [
     path('list/', views.DepartmentsListView.as_view(), name='depart_list'),
     path('create/', views.DepartmentsCreateView.as_view(), name='create'),
-    path('update/', views.DepartmentsUpdateView.as_view(), name='update'),
-    path('detail/', views.DepartmentsDetailView.as_view(), name='detail'),
-    path('delete/', views.DepartmentsDeleteView.as_view(), name='delete'),
+    path('update/<int:pk>/', views.DepartmentsUpdateView.as_view(), name='update'),
+    path('detail/<int:pk>/', views.DepartmentsDetailView.as_view(), name='detail'),
+    path('delete/<int:pk>/', views.DepartmentsDeleteView.as_view(), name='delete'),
 ]

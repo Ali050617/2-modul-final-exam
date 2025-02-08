@@ -1,90 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School CRM - Teacher Details</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-</head>
-<body class="bg-gray-50">
-    <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
-        <aside class="fixed left-0 top-0 h-screen w-64 bg-white border-r p-4 overflow-y-auto">
-            <div class="mb-8">
-                <h1 class="text-xl font-bold text-blue-600">School CRM</h1>
-            </div>
-            <nav class="space-y-2">
-                <a href="../dashboard.html" class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50">
-                    <i class="bi bi-grid"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="../departments/list.html" class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50">
-                    <i class="bi bi-building"></i>
-                    <span>Departments</span>
-                </a>
-                <a href="../students/list.html" class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50">
-                    <i class="bi bi-people"></i>
-                    <span>Students</span>
-                </a>
-                <a href="list.html" class="flex items-center space-x-2 px-4 py-2 rounded-lg bg-blue-50 text-blue-600">
-                    <i class="bi bi-person-badge"></i>
-                    <span>Teachers</span>
-                </a>
-                <a href="../groups/list.html" class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50">
-                    <i class="bi bi-collection"></i>
-                    <span>Groups</span>
-                </a>
-                <a href="../subjects/list.html" class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50">
-                    <i class="bi bi-book"></i>
-                    <span>Subjects</span>
-                </a>
-            </nav>
-        </aside>
+{% extends 'base.html' %}
 
-        <!-- Main Content -->
-        <div class="flex-1 ml-64 flex flex-col h-screen">
-            <!-- Navbar -->
-            <nav class="bg-white shadow-sm">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="flex justify-between h-16">
-                        <div class="flex items-center">
-                            <h1 class="text-xl font-bold text-blue-600">School CRM</h1>
-                        </div>
-                        <div class="flex items-center">
-                            <a href="/profile-update.html" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-                                <i class="bi bi-person-circle mr-2"></i>Update Profile
-                            </a>
-                            <a href="/logout.html" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-                                <i class="bi bi-box-arrow-right mr-2"></i>Logout
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </nav>
 
-            <!-- Main Content -->
-            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-8">
-                <div class="max-w-4xl mx-auto">
+{% block title %} School CRM - Teacher Details  {% endblock %}
+
+
+{% block content %}
+ <div class="max-w-4xl mx-auto">
                     <!-- Header -->
                     <div class="mb-8 flex items-center justify-between">
                         <div class="flex items-center space-x-4">
-                            <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
-                                <i class="bi bi-person text-3xl text-gray-400"></i>
+                            <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                                <img src="{{ teacher.image.url }}" alt="image" class="w-full h-full object-cover">
                             </div>
                             <div>
-                                <h1 class="text-2xl font-bold">Dr. Jane Smith</h1>
-                                <p class="text-gray-500">Teacher ID: TCH-001</p>
+                                <h1 class="text-2xl font-bold">{{ teacher.first_name }} {{ teacher.last_name }}</h1>
+                                <p class="text-gray-500">Teacher ID: {{ teacher.id }}</p>
                             </div>
                         </div>
                         <div class="flex items-center space-x-4">
                             <button class="px-4 py-2 border rounded-lg hover:bg-gray-50">
-                                <i class="bi bi-pencil"></i>
-                                <span class="ml-2">Edit</span>
+                                <a href="{% url 'teachers:teacher_list' %}">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                           <span class="ml-2">Exit</span>
+                                </a>
+                            </button>
+                            <button class="px-4 py-2 border rounded-lg hover:bg-gray-50">
+                                <a href="{{ teacher.get_update_url }}">
+                                    <i class="bi bi-pencil"></i>
+                                    <span class="ml-2">Edit</span>
+                                </a>
                             </button>
                             <button class="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100">
                                 <i class="bi bi-trash"></i>
-                                <span class="ml-2">Delete</span>
+                                <span class="ml-2"><a href="{{ teacher.get_delete_url }}">Delete</a></span>
                             </button>
                         </div>
                     </div>
@@ -97,23 +45,23 @@
                             <div class="grid grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm text-gray-500">First Name</label>
-                                    <p class="text-gray-900">Jane</p>
+                                    <p class="text-gray-900">{{ teacher.first_name }}</p>
                                 </div>
                                 <div>
                                     <label class="block text-sm text-gray-500">Last Name</label>
-                                    <p class="text-gray-900">Smith</p>
+                                    <p class="text-gray-900">{{ teacher.last_name }}</p>
                                 </div>
                                 <div>
                                     <label class="block text-sm text-gray-500">Email</label>
-                                    <p class="text-gray-900">jane.smith@school.com</p>
+                                    <p class="text-gray-900">{{ teacher.email }}</p>
                                 </div>
                                 <div>
                                     <label class="block text-sm text-gray-500">Phone</label>
-                                    <p class="text-gray-900">+1 234 567 890</p>
+                                    <p class="text-gray-900">{{ teacher.phone_number }}</p>
                                 </div>
                                 <div class="col-span-2">
                                     <label class="block text-sm text-gray-500">Address</label>
-                                    <p class="text-gray-900">456 Oak St, City, Country</p>
+                                    <p class="text-gray-900">{{ teacher.address }}</p>
                                 </div>
                             </div>
 
@@ -121,23 +69,23 @@
                             <div class="grid grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm text-gray-500">Department</label>
-                                    <p class="text-gray-900">Science Department</p>
+                                    <p class="text-gray-900">{{ teacher.department }}</p>
                                 </div>
                                 <div>
                                     <label class="block text-sm text-gray-500">Position</label>
-                                    <p class="text-gray-900">Physics Professor</p>
+                                    <p class="text-gray-900">{{ teacher.position }}</p>
                                 </div>
                                 <div>
                                     <label class="block text-sm text-gray-500">Join Date</label>
-                                    <p class="text-gray-900">1 Sep 2020</p>
+                                    <p class="text-gray-900">{{ teacher.join_date }}</p>
                                 </div>
                                 <div>
                                     <label class="block text-sm text-gray-500">Employment Type</label>
-                                    <p class="text-gray-900">Full Time</p>
+                                    <p class="text-gray-900">{{ teacher.get_employment_type_display }}</p>
                                 </div>
                                 <div class="col-span-2">
                                     <label class="block text-sm text-gray-500">Qualification</label>
-                                    <p class="text-gray-900">Ph.D. in Physics</p>
+                                    <p class="text-gray-900">{{ teacher.qualification }}</p>
                                 </div>
                             </div>
                         </div>
@@ -149,7 +97,7 @@
                                 <div class="space-y-4">
                                     <div>
                                         <label class="block text-sm text-gray-500">Total Classes</label>
-                                        <p class="text-2xl font-bold">6</p>
+                                        <p class="text-2xl font-bold">{{ teacher.groups.count }}</p>
                                     </div>
                                     <div>
                                         <label class="block text-sm text-gray-500">Total Students</label>
@@ -165,18 +113,12 @@
                             <div class="bg-white rounded-lg shadow-sm p-6">
                                 <h3 class="text-lg font-semibold mb-4">Subjects</h3>
                                 <div class="space-y-2">
-                                    <div class="flex items-center space-x-2">
-                                        <i class="bi bi-check-circle text-green-600"></i>
-                                        <span>Physics 101</span>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <i class="bi bi-check-circle text-green-600"></i>
-                                        <span>Advanced Physics</span>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <i class="bi bi-check-circle text-green-600"></i>
-                                        <span>Quantum Mechanics</span>
-                                    </div>
+                                    {% for subject in teacher.subjects.all %}
+                                        <div class="flex items-center space-x-2">
+                                            <i class="bi bi-check-circle text-green-600"></i>
+                                            <span>{{ subject.name }}</span>
+                                        </div>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
@@ -240,8 +182,4 @@
                         </div>
                     </div>
                 </div>
-            </main>
-        </div>
-    </div>
-</body>
-</html>
+{% endblock %}

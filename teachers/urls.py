@@ -2,13 +2,14 @@ from django.urls import path
 from . import views
 
 
-app_name = 'departments'
+app_name = 'teachers'
 
 
 urlpatterns = [
-    path('list/', views.DepartmentsListView.as_view(), name='depart_list'),
-    path('create/', views.DepartmentsCreateView.as_view(), name='create'),
-    path('update/', views.DepartmentsUpdateView.as_view(), name='update'),
-    path('detail/', views.DepartmentsDetailView.as_view(), name='detail'),
-    path('delete/', views.DepartmentsDeleteView.as_view(), name='delete'),
+    path('list/', views.TeacherListView.as_view(), name='teacher_list'),
+    path('create/', views.TeacherCreateView.as_view(), name='create'),
+    path('update/<int:pk>/', views.TeacherUpdatedView.as_view(), name='update'),
+    path('detail/<int:pk>/', views.TeacherDetailView.as_view(), name='detail'),
+    path('delete/<int:pk>/', views.TeacherDeleteView.as_view(), name='delete'),
+
 ]
