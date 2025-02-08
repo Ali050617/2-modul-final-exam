@@ -20,7 +20,7 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-sm text-gray-600">Total Students</p>
-                                <h3 class="text-3xl font-bold mt-2">1,234</h3>
+                                <h3 class="text-3xl font-bold mt-2">{{ students.count }}</h3>
                             </div>
                             <div class="p-3 bg-blue-50 rounded-lg">
                                 <i class="bi bi-people text-blue-600"></i>
@@ -36,7 +36,7 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-sm text-gray-600">Total Teachers</p>
-                                <h3 class="text-3xl font-bold mt-2">48</h3>
+                                <h3 class="text-3xl font-bold mt-2">{{ teachers.count }}</h3>
                             </div>
                             <div class="p-3 bg-green-50 rounded-lg">
                                 <i class="bi bi-person-badge text-green-600"></i>
@@ -52,7 +52,7 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-sm text-gray-600">Active Groups</p>
-                                <h3 class="text-3xl font-bold mt-2">56</h3>
+                                <h3 class="text-3xl font-bold mt-2">{{ groups_count }}</h3>
                             </div>
                             <div class="p-3 bg-purple-50 rounded-lg">
                                 <i class="bi bi-collection text-purple-600"></i>
@@ -68,7 +68,7 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-sm text-gray-600">Total Subjects</p>
-                                <h3 class="text-3xl font-bold mt-2">24</h3>
+                                <h3 class="text-3xl font-bold mt-2">{{ subjects.count }}</h3>
                             </div>
                             <div class="p-3 bg-orange-50 rounded-lg">
                                 <i class="bi bi-book text-orange-600"></i>
@@ -147,7 +147,7 @@
                     </button>
                 </div>
                 <div class="mt-4 space-y-2">
-                    <a href="departments/form.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50">
+                    <a href="{% url 'departments:create' %}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50">
                         <div class="p-2 bg-indigo-50 rounded-lg">
                             <i class="bi bi-building text-indigo-600"></i>
                         </div>
@@ -156,7 +156,7 @@
                             <p class="text-sm text-gray-500">Create a new department</p>
                         </div>
                     </a>
-                    <a href="students/form.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50">
+                    <a href="{% url 'students:create' %}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50">
                         <div class="p-2 bg-blue-50 rounded-lg">
                             <i class="bi bi-people text-blue-600"></i>
                         </div>
@@ -165,7 +165,7 @@
                             <p class="text-sm text-gray-500">Register a new student</p>
                         </div>
                     </a>
-                    <a href="teachers/form.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50">
+                    <a href="{% url 'teachers:create' %}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50">
                         <div class="p-2 bg-green-50 rounded-lg">
                             <i class="bi bi-person-badge text-green-600"></i>
                         </div>
@@ -174,7 +174,7 @@
                             <p class="text-sm text-gray-500">Register a new teacher</p>
                         </div>
                     </a>
-                    <a href="groups/form.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50">
+                    <a href="{% url 'groups:create' %}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50">
                         <div class="p-2 bg-purple-50 rounded-lg">
                             <i class="bi bi-collection text-purple-600"></i>
                         </div>
@@ -183,7 +183,7 @@
                             <p class="text-sm text-gray-500">Create a new group</p>
                         </div>
                     </a>
-                    <a href="subjects/form.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50">
+                    <a href="{% url 'subjects:create' %}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50">
                         <div class="p-2 bg-orange-50 rounded-lg">
                             <i class="bi bi-book text-orange-600"></i>
                         </div>

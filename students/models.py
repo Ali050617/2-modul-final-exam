@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.db import models
 from django.utils.text import slugify
 from django.shortcuts import reverse
@@ -24,7 +23,6 @@ class Student(BaseModel):
         ('9', 'Grade 9'),
         ('10', 'Grade 10'),
         ('11', 'Grade 11'),
-        ('12', 'Grade 12'),
     ]
 
     STATUS_CHOICES = [
@@ -32,8 +30,6 @@ class Student(BaseModel):
         ('in', 'Inactive'),
         ('pd', 'Pending'),
     ]
-
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     birth_date = models.DateField()
@@ -44,7 +40,7 @@ class Student(BaseModel):
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='students', blank=True)
     grade = models.CharField(max_length=20, choices=GRADE_CHOICES, blank=True)
     gender = models.CharField(max_length=50, choices=SELECT_GENDER, blank=True)
-    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='in')
+    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='ac')
     address = models.TextField()
     guardian_name = models.CharField(max_length=100)
     guardian_phone = models.CharField(max_length=13)

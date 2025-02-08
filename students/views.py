@@ -1,5 +1,3 @@
-from django.shortcuts import redirect
-
 from .models import Student
 from .forms import StudentForm
 from django.urls import reverse_lazy
@@ -17,10 +15,6 @@ class StudentCreateView(CreateView):
     form_class = StudentForm
     template_name = 'students/form.html'
     success_url = reverse_lazy('students:student_list')
-
-    def form_valid(self, form):
-        student = form.save()
-        return redirect(self.success_url)
 
 
 class StudentUpdateView(UpdateView):

@@ -5,7 +5,8 @@ from .models import Student
 class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
-        fields = ('first_name', 'last_name', 'birth_date', 'status', 'gender', 'email', 'phone_number', 'grade', 'address', 'guardian_name', 'guardian_phone', 'guardian_email', 'image', 'group')
+        fields = ('first_name', 'last_name', 'birth_date', 'gender', 'email', 'phone_number', 'grade',
+                  'address', 'guardian_name', 'guardian_phone', 'guardian_email', 'image', 'group')
         widgets = {
             'first_name': forms.TextInput(attrs={
                 'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
@@ -19,9 +20,6 @@ class StudentForm(forms.ModelForm):
                 'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
                 'placeholder': 'Select date of birth',
                 'type': 'date',
-            }),
-            'status': forms.Select(attrs={
-                'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
             }),
             'gender': forms.Select(attrs={
                 'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
