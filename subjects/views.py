@@ -1,5 +1,6 @@
 from django.core.paginator import Paginator
 from departments.models import Department
+from django.contrib import messages
 from .models import Subject
 from django.urls import reverse_lazy
 from .forms import SubjectForm
@@ -47,17 +48,22 @@ class SubjectCreateView(CreateView):
     model = Subject
     template_name = 'subjects/form.html'
     form_class = SubjectForm
-    success_url = reverse_lazy('subject_list')
+    success_url = reverse_lazy('subjects:subject_list')
 
-    def get_success_url(self):
-        return reverse_lazy('subjects:subject_list')
+    def form_valid(self, form):
+        messages.success(self.request, "Subject successfully created!")
+        return super().form_valid(form)
 
 
 class SubjectUpdatedView(UpdateView):
     model = Subject
     template_name = 'subjects/form.html'
     form_class = SubjectForm
-    success_url = reverse_lazy('subjects')
+    success_url = reverse_lazy('subjects:subject_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Subject successfully updated!")
+        return super().form_valid(form)
 
 
 class SubjectDetailView(DetailView):
@@ -69,4 +75,8 @@ class SubjectDetailView(DetailView):
 class SubjectDeleteView(DeleteView):
     model = Subject
     template_name = 'subjects/list.html'
-    success_url = reverse_lazy('subjects_list')
+    success_url = reverse_lazy('subjects:subject_list')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, "Subject successfully deleted!")
+        return super().delete(request, *args, **kwargs)

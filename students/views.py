@@ -1,3 +1,4 @@
+from django.contrib import messages
 from .models import Student
 from .forms import StudentForm
 from django.urls import reverse_lazy
@@ -16,6 +17,10 @@ class StudentCreateView(CreateView):
     template_name = 'students/form.html'
     success_url = reverse_lazy('students:student_list')
 
+    def form_valid(self, form):
+        messages.success(self.request, "Student successfully created!")
+        return super().form_valid(form)
+
 
 class StudentUpdateView(UpdateView):
     model = Student
@@ -24,10 +29,8 @@ class StudentUpdateView(UpdateView):
     success_url = reverse_lazy('students:student_list')
 
     def form_valid(self, form):
+        messages.success(self.request, "Student successfully updated!")
         return super().form_valid(form)
-
-    def form_invalid(self, form):
-        return self.render_to_response(self.get_context_data(form=form))
 
 
 class StudentDetailView(DetailView):
@@ -40,3 +43,7 @@ class StudentDeleteView(DeleteView):
     model = Student
     template_name = 'students/list.html'
     success_url = reverse_lazy('students:student_list')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, "Student successfully deleted!")
+        return super().delete(request, *args, **kwargs)
