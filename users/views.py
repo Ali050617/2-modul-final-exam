@@ -1,8 +1,8 @@
 from django.contrib import messages
-from django.contrib.auth import get_user_model, authenticate, login
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, DetailView
+from django.views import View
+from django.views.generic import CreateView, UpdateView
 from django.shortcuts import render, redirect
 from django.utils.crypto import get_random_string
 from django.utils.timezone import now
@@ -14,27 +14,18 @@ User = get_user_model()
 
 
 class UserSignupView(CreateView):
-    class Meta:
-        model = User
-        form_class = SignupForm
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.widget.attrs.update({
-                'class': 'form-control'})
+    template_name = 'users/login.html'
+    form_class = SignupForm
+    success_url = reverse_lazy('users:login')
 
     def form_valid(self, form):
         user = form.save(commit=False)
         user.is_active = False
-        messages.success(self.request, "Registration completed successfully!")
         user.otp = get_random_string(length=6, allowed_chars='1234567890')
         user.otp_created_at = now()
         user.save()
 
-    def form_invalid(self, form):
-        messages.error(self.request, "Error during registration. Please check the entered data!")
-        return super().form_invalid(form)
+        messages.success(self.request, "Registration completed successfully!")
 
         send_mail(
             'Email Verification Code',
@@ -44,7 +35,11 @@ class UserSignupView(CreateView):
             fail_silently=False,
         )
 
-        return redirect('verify_email', email=user.email)
+        return redirect('users:verify_email', email=user.email)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Error during registration. Please check the entered data!")
+        return super().form_invalid(form)
 
 
 class VerifyEmailView(CreateView):
@@ -68,36 +63,39 @@ class VerifyEmailView(CreateView):
             return render(request, self.template_name, {'error': 'Invalid OTP'})
 
 
-class UserLoginView(LoginView):
+class UserLoginView(View):
     template_name = 'users/login.html'
-    form_class = LoginForm
-    redirect_authenticated_user = True
 
-    def get_success_url(self):
-        return reverse_lazy('home')
+    def get(self, request):
+        form = LoginForm()
+        return render(request, self.template_name, {'form': form})
 
-    def form_valid(self, form):
-        email = form.cleaned_data.get('email')
-        password = form.cleaned_data.get('password')
-        user = authenticate(request=self.request, username=email, password=password)
-        if user is not None:
-            login(self.request, user)
+    def post(self, request):
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
             remember_me = form.cleaned_data.get('remember_me', False)
-            if not remember_me:
-                self.request.session.set_expiry(0)
-            messages.success(self.request, "You have successfully logged in!")
-            return super().form_valid(form)
-        else:
-            messages.error(self.request, "Invalid email or password. Try again!")
-            return self.form_invalid(form)
+
+            user = authenticate(request, username=email, password=password)
+            if user is not None:
+                login(request, user)
+                if not remember_me:
+                    request.session.set_expiry(0)
+                messages.success(request, "You have successfully logged in!")
+                return redirect(reverse_lazy('home'))
+            else:
+                messages.error(request, "Invalid email or password. Try again!")
+
+        return render(request, self.template_name, {'form': form})
 
 
-class UserLogoutView(LogoutView):
-    next_page = reverse_lazy('login')
+class UserLogoutView(View):
+    next_page = 'users:login'
 
-    def dispatch(self, request, *args, **kwargs):
-        messages.info(request, "You have successfully logged out!")
-        return super().dispatch(request, *args, **kwargs)
+    def get(self, request):
+        logout(request)
+        return render(request, 'users/logout.html')
 
 
 class UserProfileUpdateView(UpdateView):
