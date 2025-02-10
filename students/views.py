@@ -1,4 +1,6 @@
 from django.contrib import messages
+from django.shortcuts import redirect
+
 from .models import Student
 from .forms import StudentForm
 from django.urls import reverse_lazy
@@ -41,9 +43,9 @@ class StudentDetailView(DetailView):
 
 class StudentDeleteView(DeleteView):
     model = Student
-    template_name = 'students/list.html'
     success_url = reverse_lazy('students:student_list')
 
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, "Student successfully deleted!")
-        return super().delete(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        group = self.get_object()
+        group.delete()
+        return redirect(self.success_url)

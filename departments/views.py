@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from .models import Department
 from subjects.models import Subject
 from students.models import Student
@@ -20,7 +21,7 @@ class DashboardView(ListView):
         ctx['groups'] = Group.objects.all()
         ctx['subjects'] = Subject.objects.all()
         ctx['groups_count'] = Group.objects.filter(status='ac').count()
-        ctx['subject_names'] = list(Subject.objects.values_list('name', flat=True))
+        ctx['subject_names'] = [subject.name for subject in Subject.objects.all()]
         ctx['subject_teachers_counts'] = [subject.teachers.count() for subject in Subject.objects.all()]
         return ctx
 
@@ -48,10 +49,13 @@ class DepartmentsUpdateView(UpdateView):
 class DepartmentsDetailView(DetailView):
     model = Department
     template_name = 'departments/detail.html'
-    context_object_name = 'departments'
-
+    context_object_name = 'department'
 
 class DepartmentsDeleteView(DeleteView):
     model = Department
-    template_name = 'departments/list.html'
     success_url = reverse_lazy('departments:depart_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        group = self.get_object()
+        group.delete()
+        return redirect(self.success_url)

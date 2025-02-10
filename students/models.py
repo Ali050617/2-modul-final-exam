@@ -46,14 +46,6 @@ class Student(BaseModel):
     guardian_phone = models.CharField(max_length=13)
     guardian_email = models.EmailField(unique=True)
 
-    def get_detail_url(self):
-        return reverse('students:detail', args=[
-            self.created_at.year,
-            self.created_at.month,
-            self.created_at.day,
-            self.slug
-        ])
-
     def save(self, *args, **kwargs):
         if not self.slug:
             base_slug = slugify(f"{self.first_name}-{self.last_name}")
@@ -66,7 +58,12 @@ class Student(BaseModel):
         super().save(*args, **kwargs)
 
     def get_detail_url(self):
-        return reverse('students:detail', args=[self.pk])
+        return reverse('students:detail', args=[
+            self.created_at.year,
+            self.created_at.month,
+            self.created_at.day,
+            self.slug
+        ])
 
     def get_update_url(self):
         return reverse('students:update', args=[self.pk])

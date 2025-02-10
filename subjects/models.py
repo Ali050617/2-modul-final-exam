@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils.text import slugify
-
 from departments.base_models import BaseModel
 from departments.models import Department
 from django.shortcuts import reverse
@@ -40,19 +39,12 @@ class Subject(BaseModel):
     credit_hours = models.PositiveIntegerField()
     status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='in')
     grade_level = models.CharField(max_length=2, choices=GRADE_LEVEL_CHOICES)
-    prerequisites = models.CharField(max_length=255, choices=PREREQUISITE_CHOICES, blank=True)
-
-    def get_detail_url(self):
-        return reverse('subjects:detail', args=[
-            self.created_at.year,
-            self.created_at.month,
-            self.created_at.day,
-            self.slug
-        ])
+    prerequisites = models.CharField(max_length=255, blank=True)
+    slug = models.SlugField(unique=True, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            base_slug = slugify(f"{self.name}-{self.description}")
+            base_slug = slugify(self.name)
             self.slug = base_slug
             counter = 1
             while Subject.objects.filter(slug=self.slug).exists():
@@ -61,7 +53,12 @@ class Subject(BaseModel):
         super().save(*args, **kwargs)
 
     def get_detail_url(self):
-        return reverse('subjects:detail', args=[self.pk])
+        return reverse('subjects:detail', args=[
+            self.created_at.year,
+            self.created_at.month,
+            self.created_at.day,
+            self.slug
+        ])
 
     def get_update_url(self):
         return reverse('subjects:update', args=[self.pk])

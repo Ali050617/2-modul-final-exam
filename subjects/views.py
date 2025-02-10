@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from django.shortcuts import redirect
 from departments.models import Department
 from django.contrib import messages
 from .models import Subject
@@ -69,14 +70,14 @@ class SubjectUpdatedView(UpdateView):
 class SubjectDetailView(DetailView):
     model = Subject
     template_name = 'subjects/detail.html'
-    context_object_name = 'subjects'
+    context_object_name = 'subject'
 
 
 class SubjectDeleteView(DeleteView):
     model = Subject
-    template_name = 'subjects/list.html'
     success_url = reverse_lazy('subjects:subject_list')
 
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, "Subject successfully deleted!")
-        return super().delete(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        group = self.get_object()
+        group.delete()
+        return redirect(self.success_url)

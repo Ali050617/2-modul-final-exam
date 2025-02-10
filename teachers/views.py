@@ -1,4 +1,6 @@
 from django.db.models import Q
+from django.shortcuts import redirect
+
 from departments.models import Department
 from subjects.models import Subject
 from .models import Teacher
@@ -64,5 +66,9 @@ class TeacherDetailView(DetailView):
 
 class TeacherDeleteView(DeleteView):
     model = Teacher
-    template_name = 'teachers/list.html'
     success_url = reverse_lazy('teachers:teacher_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        group = self.get_object()
+        group.delete()
+        return redirect(self.success_url)
