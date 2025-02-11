@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model, authenticate, login, logout
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import UpdateView, FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from .models import UserProfile
 from .forms import UserProfileForm, CustomAuthenticationForm
@@ -32,11 +33,15 @@ class UserLogoutView(View):
         return render(request, 'users/logout.html')
 
 
-class UserProfileUpdateView(UpdateView):
+class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = UserProfile
     form_class = UserProfileForm
     template_name = 'users/profile-update.html'
-    login_url = reverse_lazy('users:profile')
+    login_url = reverse_lazy('users:login')
 
     def get_object(self, queryset=None):
-        return self.request.user.profile
+        profile, created = UserProfile.objects.get_or_create(user=self.request.user)
+        return profile
+
+    def get_success_url(self):
+        return reverse('users:profile')

@@ -5,7 +5,7 @@ class CustomUserManager(BaseUserManager):
     def create_user(self, email, username, password=None, **extra_fields):
         if not email:
             raise ValueError('Users must have an email address')
-        # Admin@gmail.com  -> admin@gmail.com
+
         email = self.normalize_email(email)
         user = self.model(email=email, username=username, **extra_fields)
         user.set_password(password)
