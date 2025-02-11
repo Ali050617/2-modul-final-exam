@@ -2,8 +2,9 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, UpdateView, FormView
+from django.views.generic import CreateView, UpdateView
 from django.shortcuts import render, redirect
+from django.contrib.auth.views import LoginView
 from django.utils.crypto import get_random_string
 from django.utils.timezone import now
 from django.core.mail import send_mail
@@ -56,14 +57,14 @@ class VerifyEmailView(CreateView):
                 user.otp = None
                 user.otp_created_at = None
                 user.save()
-                return redirect('login')
+                return redirect('users:login')
             else:
                 return render(request, self.template_name, {'error': 'OTP expired'})
         except User.DoesNotExist:
             return render(request, self.template_name, {'error': 'Invalid OTP'})
 
 
-class UserLoginView(FormView):
+class UserLoginView(LoginView):
     form_class = LoginForm
     template_name = 'users/login.html'
     success_url = reverse_lazy('home')
@@ -71,10 +72,12 @@ class UserLoginView(FormView):
     def form_valid(self, form):
         email = form.cleaned_data.get('username')
         password = form.cleaned_data.get('password')
-        user = authenticate(email=email, password=password)
+        user = authenticate(self.request, email=email, password=password)
+
         if user is not None:
             login(self.request, user)
             return super().form_valid(form)
+
         return self.form_invalid(form)
 
 
