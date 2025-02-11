@@ -3,9 +3,17 @@ from django.utils.text import slugify
 from django.shortcuts import reverse
 from groups.models import Group
 from departments.base_models import BaseModel
+from django.core.validators import RegexValidator
+
+
+phone_regex = RegexValidator(
+    regex=r'^\+998\d{9}$',
+    message="Enter a valid Uzbekistan phone number in the format: +998XXXXXXXXX (9 digits after +998)."
+)
 
 
 class Student(BaseModel):
+
     SELECT_GENDER = [
         ('mal', 'Male'),
         ('fem', 'Female'),
@@ -35,8 +43,12 @@ class Student(BaseModel):
     birth_date = models.DateField()
     email = models.EmailField(unique=True)
     slug = models.SlugField(max_length=100, unique=True, blank=True)
+    phone_number = models.CharField(
+        max_length=13,
+        validators=[phone_regex],
+        help_text="Enter a valid Uzbekistan phone number (e.g., +998901234567)."
+    )
     image = models.ImageField(upload_to='images/')
-    phone_number = models.CharField(max_length=13)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='students', blank=True)
     grade = models.CharField(max_length=20, choices=GRADE_CHOICES, blank=True)
     gender = models.CharField(max_length=50, choices=SELECT_GENDER, blank=True)

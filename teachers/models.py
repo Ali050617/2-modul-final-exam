@@ -4,9 +4,17 @@ from django.utils.text import slugify
 from departments.models import Department
 from subjects.models import Subject
 from departments.base_models import BaseModel
+from django.core.validators import RegexValidator
+
+
+phone_regex = RegexValidator(
+    regex=r'^\+998\d{9}$',
+    message="Enter a valid Uzbekistan phone number in the format: +998XXXXXXXXX (9 digits after +998)."
+)
 
 
 class Teacher(BaseModel):
+
     EMPLOYMENT_TYPE_CHOICES = [
         ('full', 'Full Time'),
         ('part', 'Part Time'),
@@ -22,7 +30,11 @@ class Teacher(BaseModel):
     last_name = models.CharField(max_length=200)
     qualification = models.CharField(max_length=50)
     email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=13)
+    phone_number = models.CharField(
+        max_length=13,
+        validators=[phone_regex],
+        help_text="Enter a valid Uzbekistan phone number (e.g., +998901234567)."
+    )
     address = models.TextField()
     join_date = models.DateField()
     slug = models.SlugField(unique=True, blank=True)

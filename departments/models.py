@@ -1,11 +1,18 @@
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
-
 from .base_models import BaseModel
+from django.core.validators import RegexValidator
+
+
+phone_regex = RegexValidator(
+    regex=r'^\+998\d{9}$',
+    message="Enter a valid Uzbekistan phone number in the format: +998XXXXXXXXX (9 digits after +998)."
+)
 
 
 class Department(BaseModel):
+
     STATUS_CHOICES = [
         ('ac', 'Active'),
         ('in', 'Inactive'),
@@ -21,10 +28,14 @@ class Department(BaseModel):
     description = models.TextField(max_length=1000)
     head_department = models.CharField(max_length=2, choices=HEAD_OF_DEPARTMENT, blank=True)
     location = models.CharField(max_length=500)
+    phone_number = models.CharField(
+        max_length=13,
+        validators=[phone_regex],
+        help_text="Enter a valid Uzbekistan phone number (e.g., +998901234567)."
+    )
     slug = models.SlugField(unique=True, blank=True, null=True)
     email = models.EmailField(unique=True, blank=True, null=True)
     status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='ac')
-    phone_number = models.CharField(max_length=13, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
