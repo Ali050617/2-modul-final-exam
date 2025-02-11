@@ -5,9 +5,10 @@ from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import DeleteView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class GroupListView(ListView):
+class GroupListView(LoginRequiredMixin, ListView):
     model = Group
     template_name = 'groups/list.html'
     context_object_name = 'groups'
@@ -27,6 +28,7 @@ class GroupCreateView(CreateView):
         print(form.errors)
         return super().form_valid(form)
 
+
 class GroupUpdateView(UpdateView):
     model = Group
     form_class = GroupForm
@@ -36,6 +38,10 @@ class GroupUpdateView(UpdateView):
     def form_valid(self, form):
         messages.success(self.request, "Group successfully updated!")
         return super().form_valid(form)
+
+    def test_func(self):
+        post = self.get_object()
+        return self.request.user == post.author
 
 
 class GroupDetailView(DetailView):
@@ -52,3 +58,7 @@ class GroupDeleteView(DeleteView):
         group = self.get_object()
         group.delete()
         return redirect(self.success_url)
+
+    def test_func(self):
+        post = self.get_object()
+        return self.request.user == post.author

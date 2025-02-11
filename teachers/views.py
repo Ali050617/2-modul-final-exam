@@ -1,6 +1,6 @@
 from django.db.models import Q
 from django.shortcuts import redirect
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from departments.models import Department
 from subjects.models import Subject
 from .models import Teacher
@@ -10,7 +10,7 @@ from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import DeleteView, UpdateView
 
 
-class TeacherListView(ListView):
+class TeacherListView(LoginRequiredMixin, ListView):
     model = Teacher
     template_name = 'teachers/list.html'
     context_object_name = 'teachers'
@@ -57,6 +57,10 @@ class TeacherUpdatedView(UpdateView):
     template_name = 'teachers/form.html'
     success_url = reverse_lazy('teachers:teacher_list')
 
+    def test_func(self):
+        post = self.get_object()
+        return self.request.user == post.author
+
 
 class TeacherDetailView(DetailView):
     model = Teacher
@@ -72,3 +76,7 @@ class TeacherDeleteView(DeleteView):
         group = self.get_object()
         group.delete()
         return redirect(self.success_url)
+
+    def test_func(self):
+        post = self.get_object()
+        return self.request.user == post.author

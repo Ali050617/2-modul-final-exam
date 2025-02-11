@@ -1,49 +1,16 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.hashers import make_password
 
-from .models import CustomUser, UserProfile
+from .models import UserProfile
 
 
-class UserCreationForm(UserCreationForm):
-    class Meta(UserCreationForm.Meta):
-        model = CustomUser
-        fields = ('email', 'username')
-
+class CustomAuthenticationForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['email'].widget.attrs.update({
-            'class': 'block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
-        })
-        self.fields['username'].widget.attrs.update({
-            'class': 'block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
-        })
-
-
-class LoginForm(AuthenticationForm):
-    email = forms.EmailField(
-        widget=forms.TextInput(
-            attrs={
-                "id": "email",
-                "name": "email",
-                "type": "email",
-                "required": True,
-                'placeholder': "name@school.com",
-                'class': 'block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
-            }
-        )
-    )
-    password = forms.CharField(
-        widget=forms.PasswordInput(
-            attrs={
-                "id": "password",
-                "name": "password",
-                'placeholder': 'Enter your password',
-                'class': 'block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
-            }
-        )
-    )
-    remember_me = forms.BooleanField(required=False)
+        for field in self.fields.values():
+            field.widget.attrs.update({
+                'class': 'block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'})
 
 
 class UserProfileForm(forms.ModelForm):

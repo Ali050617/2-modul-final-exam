@@ -1,3 +1,6 @@
+from json import dumps
+from django.db.models import Count
+from django.db.models.functions import ExtractMonth
 from django.shortcuts import redirect
 from .models import Department
 from subjects.models import Subject
@@ -8,9 +11,10 @@ from .forms import DepartmentForm
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import DeleteView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class DashboardView(ListView):
+class DashboardView(LoginRequiredMixin, ListView):
     model = Student
     template_name = 'dashboard.html'
     context_object_name = 'students'
@@ -24,10 +28,6 @@ class DashboardView(ListView):
         ctx['subject_names'] = [subject.name for subject in Subject.objects.all()]
         ctx['subject_teachers_counts'] = [subject.teachers.count() for subject in Subject.objects.all()]
         ctx['student_count'] = Student.objects.filter(status='ac').count()
-
-        from django.db.models.functions import ExtractMonth
-        from django.db.models import Count
-        from json import dumps
 
         enrollments = (
             Student.objects.filter(status='ac')
@@ -46,7 +46,7 @@ class DashboardView(ListView):
         return ctx
 
 
-class DepartmentsListView(ListView):
+class DepartmentsListView(LoginRequiredMixin, ListView):
     model = Department
     template_name = 'departments/list.html'
     context_object_name = 'departments'
@@ -65,6 +65,10 @@ class DepartmentsUpdateView(UpdateView):
     template_name = 'departments/form.html'
     success_url = reverse_lazy('departments:depart_list')
 
+    def test_func(self):
+        post = self.get_object()
+        return self.request.user == post.author
+
 
 class DepartmentsDetailView(DetailView):
     model = Department
@@ -80,3 +84,7 @@ class DepartmentsDeleteView(DeleteView):
         group = self.get_object()
         group.delete()
         return redirect(self.success_url)
+
+    def test_func(self):
+        post = self.get_object()
+        return self.request.user == post.author
