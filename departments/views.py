@@ -23,6 +23,8 @@ class DashboardView(ListView):
         ctx['groups_count'] = Group.objects.filter(status='ac').count()
         ctx['subject_names'] = [subject.name for subject in Subject.objects.all()]
         ctx['subject_teachers_counts'] = [subject.teachers.count() for subject in Subject.objects.all()]
+        ctx['student_count'] = Student.objects.filter(status='ac')
+
         return ctx
 
 

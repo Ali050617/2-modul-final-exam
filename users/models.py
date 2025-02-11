@@ -32,4 +32,4 @@ class UserProfile(BaseModel):
     bio = models.TextField(null=True, blank=True)
     dob = models.DateField(null=True, blank=True)
     phone_number = models.CharField(max_length=14, null=True, blank=True)
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profile')
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='user_profile')

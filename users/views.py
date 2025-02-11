@@ -2,20 +2,20 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, FormView
 from django.shortcuts import render, redirect
 from django.utils.crypto import get_random_string
 from django.utils.timezone import now
 from django.core.mail import send_mail
 from .models import UserProfile
-from .forms import LoginForm, UserProfileForm, SignupForm
+from .forms import UserProfileForm, UserCreationForm, LoginForm
 
 User = get_user_model()
 
 
 class UserSignupView(CreateView):
+    form_class = UserCreationForm
     template_name = 'users/login.html'
-    form_class = SignupForm
     success_url = reverse_lazy('users:login')
 
     def form_valid(self, form):
@@ -63,31 +63,19 @@ class VerifyEmailView(CreateView):
             return render(request, self.template_name, {'error': 'Invalid OTP'})
 
 
-class UserLoginView(View):
+class UserLoginView(FormView):
+    form_class = LoginForm
     template_name = 'users/login.html'
+    success_url = reverse_lazy('home')
 
-    def get(self, request):
-        form = LoginForm()
-        return render(request, self.template_name, {'form': form})
-
-    def post(self, request):
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get('email')
-            password = form.cleaned_data.get('password')
-            remember_me = form.cleaned_data.get('remember_me', False)
-
-            user = authenticate(request, username=email, password=password)
-            if user is not None:
-                login(request, user)
-                if not remember_me:
-                    request.session.set_expiry(0)
-                messages.success(request, "You have successfully logged in!")
-                return redirect(reverse_lazy('home'))
-            else:
-                messages.error(request, "Invalid email or password. Try again!")
-
-        return render(request, self.template_name, {'form': form})
+    def form_valid(self, form):
+        email = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password')
+        user = authenticate(email=email, password=password)
+        if user is not None:
+            login(self.request, user)
+            return super().form_valid(form)
+        return self.form_invalid(form)
 
 
 class UserLogoutView(View):
@@ -102,6 +90,7 @@ class UserProfileUpdateView(UpdateView):
     model = UserProfile
     form_class = UserProfileForm
     template_name = 'users/profile-update.html'
+    login_url = reverse_lazy('users:profile')
 
     def get_object(self, queryset=None):
-        return self.request.user.profile
+        return self.request.user.user_profile

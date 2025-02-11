@@ -1,17 +1,24 @@
 from django.contrib import admin
 from .models import Department
-from .forms import DepartmentForm
 
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'head_department', 'location', 'email', 'phone_number', 'status')
-    list_filter = ('status',)
-    search_fields = ('name', 'head_department', 'location', 'email')
-    ordering = ('name',)
+    list_display = ('name', 'head_department', 'email', 'phone_number', 'status', 'created_at')
+    list_filter = ('status', 'created_at')
+    search_fields = ('name', 'email', 'phone_number')
     prepopulated_fields = {'slug': ('name',)}
-    form = DepartmentForm
-
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        return queryset.filter(status='ac')
+    ordering = ('-created_at',)
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('name', 'slug', 'head_department', 'description', 'location')
+        }),
+        ('Contact Details', {
+            'fields': ('email', 'phone_number')
+        }),
+        ('Status & Metadata', {
+            'fields': ('status', 'created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    readonly_fields = ('created_at', 'updated_at')
