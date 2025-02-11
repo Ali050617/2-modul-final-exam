@@ -1,13 +1,8 @@
-from django.contrib import messages
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, UpdateView, FormView
-from django.shortcuts import render, redirect
-from django.contrib.auth.views import LoginView
-from django.utils.crypto import get_random_string
-from django.utils.timezone import now
-from django.core.mail import send_mail
+from django.views.generic import UpdateView, FormView
+from django.shortcuts import render
 from .models import UserProfile
 from .forms import UserProfileForm, CustomAuthenticationForm
 
