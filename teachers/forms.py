@@ -40,7 +40,7 @@ class TeacherForm(forms.ModelForm):
                 'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
             }),
             'phone_number': forms.TextInput(attrs={
-                'placeholder': 'Enter phone number',
+                'placeholder': 'The phone number must be in the format +998XXXXXXXXX.',
                 'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
             }),
             'address': forms.Textarea(attrs={

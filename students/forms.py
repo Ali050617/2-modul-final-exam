@@ -31,7 +31,7 @@ class StudentForm(forms.ModelForm):
             }),
             'phone_number': forms.TextInput(attrs={
                 'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
-                'placeholder': 'Enter phone number',
+                'placeholder': 'The phone number must be in the format +998XXXXXXXXX.',
             }),
             'grade': forms.Select(attrs={
                 'class': 'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
