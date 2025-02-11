@@ -23,7 +23,26 @@ class DashboardView(ListView):
         ctx['groups_count'] = Group.objects.filter(status='ac').count()
         ctx['subject_names'] = [subject.name for subject in Subject.objects.all()]
         ctx['subject_teachers_counts'] = [subject.teachers.count() for subject in Subject.objects.all()]
-        ctx['student_count'] = Student.objects.filter(status='ac')
+        ctx['student_count'] = Student.objects.filter(status='ac').count()
+
+        # Har oy bo‘yicha talabalar ro‘yxatga olish sonini chiqarish
+        from django.db.models.functions import ExtractMonth
+        from django.db.models import Count
+
+        enrollments = (
+            Student.objects.filter(status='ac')
+            .annotate(month=ExtractMonth('created_at'))
+            .values('month')
+            .annotate(count=Count('id'))
+            .order_by('month')
+        )
+
+        # Barcha oylarga 0 qo‘yish
+        enrollment_data = {i: 0 for i in range(1, 13)}
+        for enrollment in enrollments:
+            enrollment_data[enrollment['month']] = enrollment['count']
+
+        ctx['enrollment_counts'] = list(enrollment_data.values())
 
         return ctx
 

@@ -231,26 +231,18 @@
 <script>
     // Static data for charts
     const enrollmentData = {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        datasets: [
-            {
-                label: '2023 Enrollments',
-                data: [650, 750, 800, 850, 900, 950, 1000, 1050, 1100, 1150, 1200, 1234],
-                borderColor: '#2563eb',
-                backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                fill: true,
-                tension: 0.4
-            },
-            {
-                label: '2022 Enrollments',
-                data: [500, 550, 600, 650, 700, 750, 800, 850, 900, 920, 950, 980],
-                borderColor: '#9333ea',
-                backgroundColor: 'rgba(147, 51, 234, 0.1)',
-                fill: true,
-                tension: 0.4
-            }
-        ]
-    };
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    datasets: [
+        {
+            label: '2024 Enrollments',
+            data: {{ enrollment_counts|safe }},
+            borderColor: '#2563eb',
+            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+            fill: true,
+            tension: 0.4
+        }
+    ]
+};
 
     function generateColors(count) {
         const predefinedColors = [
