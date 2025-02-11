@@ -25,9 +25,9 @@ class DashboardView(ListView):
         ctx['subject_teachers_counts'] = [subject.teachers.count() for subject in Subject.objects.all()]
         ctx['student_count'] = Student.objects.filter(status='ac').count()
 
-        # Har oy bo‘yicha talabalar ro‘yxatga olish sonini chiqarish
         from django.db.models.functions import ExtractMonth
         from django.db.models import Count
+        from json import dumps
 
         enrollments = (
             Student.objects.filter(status='ac')
@@ -37,12 +37,11 @@ class DashboardView(ListView):
             .order_by('month')
         )
 
-        # Barcha oylarga 0 qo‘yish
         enrollment_data = {i: 0 for i in range(1, 13)}
         for enrollment in enrollments:
             enrollment_data[enrollment['month']] = enrollment['count']
 
-        ctx['enrollment_counts'] = list(enrollment_data.values())
+        ctx['enrollment_counts'] = dumps(list(enrollment_data.values()))
 
         return ctx
 
