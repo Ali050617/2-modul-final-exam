@@ -43,5 +43,10 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
         profile, created = UserProfile.objects.get_or_create(user=self.request.user)
         return profile
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
     def get_success_url(self):
         return reverse('users:profile')

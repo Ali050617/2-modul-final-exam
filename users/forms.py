@@ -1,8 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.hashers import make_password
-
 from .models import UserProfile
+from .models import CustomUser
 
 
 class CustomAuthenticationForm(AuthenticationForm):
@@ -55,6 +54,12 @@ class UserProfileForm(forms.ModelForm):
 
         self.fields['bio'].widget.attrs.update({'rows': '4'})
 
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        if username and CustomUser.objects.filter(username=username).exclude(id=self.instance.user.id).exists():
+            raise forms.ValidationError("This username is already taken.")
+        return username
+
     def clean(self):
         cleaned_data = super().clean()
         new_password = cleaned_data.get("new_password")
@@ -68,16 +73,17 @@ class UserProfileForm(forms.ModelForm):
 
     def save(self, commit=True):
         user_profile = super().save(commit=False)
-        new_password = self.cleaned_data.get("new_password")
+        user = user_profile.user
 
+        new_password = self.cleaned_data.get("new_password")
         if new_password:
-            user_profile.user.password = make_password(new_password)
-            user_profile.user.save()
+            user.set_password(new_password)
+            user.save()
 
         username = self.cleaned_data.get("username")
         if username:
-            user_profile.user.username = username
-            user_profile.user.save()
+            user.username = username
+            user.save()
 
         if commit:
             user_profile.save()
